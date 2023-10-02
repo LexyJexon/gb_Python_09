@@ -1,6 +1,7 @@
 from data_create import name_data, surname_data, phone_data, address_data
 import os
 
+
 def get_path(mpath: str) -> os.path:
     return os.path.join(os.getcwd(), mpath)
 
@@ -69,11 +70,13 @@ def put_data():
 
         # ТУТ НАПИСАТЬ КОД
         # Можно добавить проверку, чтобы человек не выходил за пределы записей
+        edit_record(number_journal, data_first, 'data_first_variant.csv', number_file)
     else:
         print("Какую именно запись по счету Вы хотите изменить?")
         number_journal = int(input('Введите номер записи: '))
         # ТУТ НАПИСАТЬ КОД
         # Можно добавить проверку, чтобы человек не выходил за пределы записи
+        edit_record(number_journal, data_second, 'data_second_variant.csv', number_file)
 
 
 def delete_data():
@@ -90,8 +93,53 @@ def delete_data():
         number_journal = int(input('Введите номер записи: '))
         # Можно добавить проверку, чтобы человек не выходил за пределы записи
         # ТУТ НАПИСАТЬ КОД
+        delete_record(number_journal, data_first, 'data_first_variant.csv')
     else:
         print("Какую именно запись по счету Вы хотите удалить?")
         number_journal = int(input('Введите номер записи: '))
         # Можно добавить проверку, чтобы человек не выходил за пределы записи
         # ТУТ НАПИСАТЬ КОД
+        delete_record(number_journal, data_second, 'data_second_variant.csv')
+
+
+def delete_record(number_journal, file_data, filename):
+    for rec in file_data:
+        if rec == '\n\n':
+            file_data.remove(rec)
+        if rec == '\n':
+            file_data.remove(rec)
+    if number_journal > len(file_data):
+        print("Нет такой записи!")
+    with open(filename, 'w', encoding='utf-8') as file:
+        for rec in file_data:
+            if rec != file_data[number_journal - 1]:
+                file.write(rec)
+
+
+def edit_record(number_journal, file_data, filename, number_file):
+    for rec in file_data:
+        if rec == '\n\n':
+            file_data.remove(rec)
+        if rec == '\n':
+            file_data.remove(rec)
+    new_rec = ''
+    if number_journal > len(file_data):
+        print("Нет такой записи!")
+    name = name_data()
+    surname = surname_data()
+    phone = phone_data()
+    address = address_data()
+    match number_file:
+        case 1:
+            new_rec = f'{name}\n{surname}\n{phone}\n{address}\n\n'
+        case 2:
+            new_rec = f'{name};{surname};{phone};{address}\n\n'
+    with open(filename, 'w', encoding='utf-8') as file:
+        for rec in file_data:
+            if rec == file_data[number_journal - 1]:
+                if number_file == 1:
+                    file.write(new_rec)
+                elif number_file == 2:
+                    file.write(new_rec)
+            else:
+                file.write(rec)
